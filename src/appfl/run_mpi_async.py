@@ -216,6 +216,10 @@ def run_client(
             break
         client.model.load_state_dict(model)
         client.update()
+        # # simulate straggler
+        # if client_idx == 1:
+        #     import time
+        #     time.sleep(20)
         ## Compute gradient if the algorithm is gradient-based
         if cfg.fed.args.gradient_based:
             local_model = compute_gradient(model, client.model)

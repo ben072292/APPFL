@@ -2,6 +2,7 @@ from .cnn import CNN
 from .resnet import ResNet18
 from .resnet_legacy import resnet18
 from .lstm import LSTMForecast
+from .vit import ViT
 
 def get_model(args):
     ## User-defined model
@@ -14,6 +15,8 @@ def get_model(args):
         model = resnet18(args.num_channel, args.num_classes, args.pretrained)
     elif args.model == "LSTM":
         model = LSTMForecast(n_features=args.n_features,n_lookback=args.n_lookback,n_lstm_layers=args.n_lstm_layers,n_hidden_size=args.n_hidden_size)
+    elif args.model == 'vit': #vit for cifar-10
+        model = ViT(image_size = args.size, patch_size = args.patch, num_classes = 10, dim = int(args.dimhead), depth = 6, heads = 8, mlp_dim = 512, dropout = 0.1, emb_dropout = 0.1)
     else:
         raise NotImplementedError
     return model

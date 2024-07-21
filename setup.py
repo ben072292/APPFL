@@ -89,6 +89,7 @@ setuptools.setup(
             "fastparquet",
             "tqdm",
             "wget",
+            "einops",
         ],
     },
     entry_points={

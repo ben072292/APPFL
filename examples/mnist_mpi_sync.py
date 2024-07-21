@@ -11,6 +11,8 @@ from losses.utils import get_loss
 from models.utils import get_model
 from metric.utils import get_metric
 from dataloader.mnist_dataloader import get_mnist
+import cProfile
+import pstats
 
 """
 To run MPI with 5 clients:
@@ -275,7 +277,27 @@ def main():
             )
 
     print("------DONE------", comm_rank)
+    pass
 
 
+# if __name__ == "__main__":
+#     main()
+
+## Profile with cprofile 
 if __name__ == "__main__":
-    main()
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    profile_filename = f"mnist_mpi_sync_profile_{rank}.prof"
+    
+    # Run profiling
+    with cProfile.Profile() as pr:
+        main()
+    pr.dump_stats(profile_filename)
+
+    # Ensure the profile file is properly closed
+    if os.path.exists(profile_filename):
+        # Analyze the profiling results
+        p = pstats.Stats(profile_filename)
+        p.sort_stats('cumulative').print_stats(10)
+    else:
+        print(f"Profile file for rank {rank} was not created.")

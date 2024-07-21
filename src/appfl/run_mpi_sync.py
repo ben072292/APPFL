@@ -210,5 +210,9 @@ def run_client(
             break
         client.model.load_state_dict(model)
         local_model = client.update()
+        # # simulate straggler
+        # if client_idx == 1:
+        #     import time
+        #     time.sleep(20)
         communicator.send_local_model_to_server(local_model, dest=0)
     outfile.close()

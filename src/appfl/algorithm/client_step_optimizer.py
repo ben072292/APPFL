@@ -16,6 +16,7 @@ class ClientStepOptim(BaseClient):
         super(ClientStepOptim, self).client_log_title()
 
     def update(self):
+        step_start_time = time.time()
         self.model.to(self.cfg.device)
         optimizer = eval(self.optim)(self.model.parameters(), **self.optim_args)
         
@@ -44,7 +45,7 @@ class ClientStepOptim(BaseClient):
                 else:
                     test_loss, test_accuracy = 0, 0
                 per_iter_time = time.time() - start_time
-                super(ClientStepOptim, self).client_log_content(epoch, per_iter_time, train_loss, train_accuracy, test_loss, test_accuracy)
+                # super(ClientStepOptim, self).client_log_content(epoch, per_iter_time, train_loss, train_accuracy, test_loss, test_accuracy)
                 
                 epoch += 1
 
@@ -91,6 +92,8 @@ class ClientStepOptim(BaseClient):
         if (self.cfg.device == "cuda"):            
             for k in self.primal_state:
                 self.primal_state[k] = self.primal_state[k].cpu()
+
+        super(ClientStepOptim, self).client_log_content(self.round, time.time() - step_start_time, 0.0, 0.0, 0.0, 0.0)
 
         return self.primal_state
  
